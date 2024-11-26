@@ -6,6 +6,7 @@ import fact.it.appointmentservice.model.Appointment;
 import fact.it.appointmentservice.repository.AppointmentRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,6 +15,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
+    @Value("${patientservice.baseurl}")
+    private String patientServiceBaseUrl;
+    @Value("${doctorservice.baseurl}")
+    private String doctorServiceBaseUrl;
 
     private final AppointmentRepository appointmentRepository;
 
