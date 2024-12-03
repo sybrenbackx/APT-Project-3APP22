@@ -26,7 +26,7 @@ public class PatientService {
             patient1.setAddress("test1");
 
             Patient patient2 = new Patient();
-            patient2.setPatientNumber("1");
+            patient2.setPatientNumber("2");
             patient2.setFullName("mister smith");
             patient2.setEmail("test.test@test.com");
             patient2.setAddress("test1");
