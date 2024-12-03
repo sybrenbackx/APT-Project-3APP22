@@ -39,3 +39,74 @@ spring:
             - Method=POST
           filters:
             - SetPath=/api/appointment
+        - id: appointment-service-update
+          uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/appointments
+            - Method=PUT
+          filters:
+            - SetPath=/api/appointment
+        - id: appointment-service-delete
+          uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/appointments
+            - Method=DELETE
+          filters:
+            - SetPath=/api/appointment
+
+        - id: doctor-service-all
+          uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/doctors
+            - Method=GET
+          filters:
+            - SetPath=/api/doctor/all
+        - id: doctor-service
+          uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/doctors
+            - Method=POST
+          filters:
+            - SetPath=/api/doctor
+        - id: doctor-service-update
+          uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/doctors
+            - Method=PUT
+          filters:
+            - SetPath=/api/doctor
+        - id: doctor-service-delete
+          uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/doctors
+            - Method=DELETE
+          filters:
+            - SetPath=/api/doctor
+        - id: patient-service-all
+          uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/patients
+            - Method=GET
+          filters:
+            - SetPath=/api/patient/all
+        - id: patient-service
+          uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/patients
+            - Method=POST
+          filters:
+            - SetPath=/api/patient
+        - id: patient-service-update
+          uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/patients
+            - Method=PUT
+          filters:
+            - SetPath=/api/patient
+        - id: patient-service-delete
+          uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/patients
+            - Method=DELETE
+          filters:
+            - SetPath=/api/patient
