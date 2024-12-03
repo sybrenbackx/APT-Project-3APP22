@@ -16,6 +16,7 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String patientNumber;
     private String fullName;
     private String email;

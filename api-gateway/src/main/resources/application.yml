@@ -32,6 +32,13 @@ spring:
             - Method=GET
           filters:
             - SetPath=/api/appointment/all
+        - id: appointment-service-id
+          uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/appointments/{id}
+            - Method=GET
+          filters:
+            - SetPath=/api/appointment/{id}
         - id: appointment-service
           uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
           predicates:
@@ -42,18 +49,19 @@ spring:
         - id: appointment-service-update
           uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
           predicates:
-            - Path=/appointments
+            - Path=/appointments/{id}
             - Method=PUT
           filters:
-            - SetPath=/api/appointment
+            - SetPath=/api/appointment/{id}
         - id: appointment-service-delete
           uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
           predicates:
-            - Path=/appointments
+            - Path=/appointments/{id}
             - Method=DELETE
           filters:
-            - SetPath=/api/appointment
+            - SetPath=/api/appointment/{id}
 
+        # Doctor Service Routes
         - id: doctor-service-all
           uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
           predicates:
@@ -61,6 +69,13 @@ spring:
             - Method=GET
           filters:
             - SetPath=/api/doctor/all
+        - id: doctor-service-id
+          uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
+          predicates:
+            - Path=/doctors/{id}
+            - Method=GET
+          filters:
+            - SetPath=/api/doctor/{id}
         - id: doctor-service
           uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
           predicates:
@@ -71,17 +86,18 @@ spring:
         - id: doctor-service-update
           uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
           predicates:
-            - Path=/doctors
+            - Path=/doctors/{id}
             - Method=PUT
           filters:
-            - SetPath=/api/doctor
+            - SetPath=/api/doctor/{id}
         - id: doctor-service-delete
           uri: http://${DOCTOR_SERVICE_BASEURL:localhost:8081}
           predicates:
-            - Path=/doctors
+            - Path=/doctors/{id}
             - Method=DELETE
           filters:
-            - SetPath=/api/doctor
+            - SetPath=/api/doctor/{id}
+
         - id: patient-service-all
           uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
           predicates:
@@ -89,6 +105,21 @@ spring:
             - Method=GET
           filters:
             - SetPath=/api/patient/all
+        - id: patient-service-all
+          uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/patients
+            - Method=GET
+          filters:
+            - SetPath=/api/patient/all
+
+        - id: patient-service-id
+          uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
+          predicates:
+            - Path=/patients/{id}
+            - Method=GET
+          filters:
+            - SetPath=/api/patient/{id}
         - id: patient-service
           uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
           predicates:
@@ -96,17 +127,19 @@ spring:
             - Method=POST
           filters:
             - SetPath=/api/patient
+
         - id: patient-service-update
           uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
           predicates:
-            - Path=/patients
+            - Path=/patients/{id}
             - Method=PUT
           filters:
-            - SetPath=/api/patient
+            - SetPath=/api/patient/{id}
+
         - id: patient-service-delete
           uri: http://${PATIENT_SERVICE_BASEURL:localhost:8082}
           predicates:
-            - Path=/patients
+            - Path=/patients/{id}
             - Method=DELETE
           filters:
-            - SetPath=/api/patient
+            - SetPath=/api/patient/{id}
