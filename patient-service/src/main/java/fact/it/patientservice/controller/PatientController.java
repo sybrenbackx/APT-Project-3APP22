@@ -26,15 +26,21 @@ public class PatientController {
     }
     @GetMapping("/{patientNumber}")
     @ResponseStatus(HttpStatus.OK)
-    public Patient getPatientByNumber(@PathVariable String patientNumber) {
+    public PatientResponse getPatientByNumber(@PathVariable String patientNumber) {
         return patientService.getPatientByNumber(patientNumber);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> addPatients(@RequestBody List<PatientRequest> patientRequests) {
-        patientService.createPatientsFromJson(patientRequests);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Patients added successfully.");
+        boolean created = patientService.createPatientsFromJson(patientRequests);
+        if (created) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Patients added successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Patient already exists.");
+        }
+
+
     }
     @PutMapping("/{patientNumber}")
     @ResponseStatus(HttpStatus.OK)

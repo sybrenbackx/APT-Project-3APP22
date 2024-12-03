@@ -18,7 +18,7 @@ public class PatientService {
     @PostConstruct
     public void loadData() {
         System.out.println(patientRepository.count());
-        if(patientRepository.count() <= 0){
+        if (patientRepository.count() <= 0) {
             Patient patient1 = new Patient();
             patient1.setPatientNumber("1");
             patient1.setFullName("mister smith");
@@ -36,7 +36,18 @@ public class PatientService {
             patientRepository.save(patient2);
         }
     }
-    public void createPatientsFromJson(List<PatientRequest> patientRequests) {
+
+    public List<PatientResponse> getAllPatients() {
+        List<Patient> patients = patientRepository.findAll();
+
+        return patients.stream().map(this::mapToPatientResponse).toList();
+    }
+
+    public PatientResponse getPatientByNumber(String patientNumber) {
+        return mapToPatientResponse(patientRepository.findByPatientNumber(patientNumber));
+    }
+
+    public boolean createPatientsFromJson(List<PatientRequest> patientRequests) {
         for (PatientRequest patientRequest : patientRequests) {
             Patient existingPatient = patientRepository.findByPatientNumber(patientRequest.getPatientNumber());
             if (existingPatient == null) {
@@ -49,20 +60,12 @@ public class PatientService {
                 patientRepository.save(patient);
             } else {
                 System.out.println("Patient with number " + patientRequest.getPatientNumber() + " already exists.");
+                return false;
             }
         }
+        return true;
     }
 
-    public List<PatientResponse> getAllPatients() {
-        List<Patient> patients = patientRepository.findAll();
-
-        return patients.stream().map(this::mapToPatientResponse).toList();
-    }
-    public Patient getPatientByNumber(String patientNumber) {
-        return patientRepository.findByPatientNumber(patientNumber);
-    }
-
-    // Update an existing patient
     public boolean updatePatient(String patientNumber, PatientRequest patientRequest) {
         Patient existingPatient = patientRepository.findByPatientNumber(patientNumber);
         if (existingPatient != null) {
