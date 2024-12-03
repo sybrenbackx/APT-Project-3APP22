@@ -66,6 +66,17 @@ services:
       MYSQL_DB_HOST: mysql-patient
       MYSQL_DB_PORT: 3306
 
+  api-gateway:
+    depends_on:
+      - appointment-service
+    image: sybren123/api-gateway
+    ports:
+      - 8083:8083
+    links:
+      - appointment-service
+    environment:
+      APPOINTMENT_SERVICE_BASEURL: appointment-service:8080
+
 volumes:
   mongodb_appointment_data:
   mysql_doctor_data:
