@@ -36,25 +36,52 @@ public class PatientService {
             patientRepository.save(patient2);
         }
     }
-    public boolean createPatient(PatientRequest patientRequest){
-        Patient patientInSystem = patientRepository.findByPatientNumber(patientRequest.getPatientNumber());
-        if (patientInSystem != null){
-            return false;
+    public void createPatientsFromJson(List<PatientRequest> patientRequests) {
+        for (PatientRequest patientRequest : patientRequests) {
+            Patient existingPatient = patientRepository.findByPatientNumber(patientRequest.getPatientNumber());
+            if (existingPatient == null) {
+                Patient patient = Patient.builder()
+                        .patientNumber(patientRequest.getPatientNumber())
+                        .fullName(patientRequest.getFullName())
+                        .email(patientRequest.getEmail())
+                        .address(patientRequest.getAddress())
+                        .build();
+                patientRepository.save(patient);
+            } else {
+                System.out.println("Patient with number " + patientRequest.getPatientNumber() + " already exists.");
+            }
         }
-        Patient patient = Patient.builder()
-                .patientNumber(patientRequest.getPatientNumber())
-                .fullName(patientRequest.getFullName())
-                .email(patientRequest.getEmail())
-                .address(patientRequest.getAddress())
-                .build();
-        patientRepository.save(patient);
-        return true;
     }
 
     public List<PatientResponse> getAllPatients() {
         List<Patient> patients = patientRepository.findAll();
 
         return patients.stream().map(this::mapToPatientResponse).toList();
+    }
+    public Patient getPatientByNumber(String patientNumber) {
+        return patientRepository.findByPatientNumber(patientNumber);
+    }
+
+    // Update an existing patient
+    public boolean updatePatient(String patientNumber, PatientRequest patientRequest) {
+        Patient existingPatient = patientRepository.findByPatientNumber(patientNumber);
+        if (existingPatient != null) {
+            existingPatient.setFullName(patientRequest.getFullName());
+            existingPatient.setEmail(patientRequest.getEmail());
+            existingPatient.setAddress(patientRequest.getAddress());
+            patientRepository.save(existingPatient);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deletePatient(String patientNumber) {
+        Patient existingPatient = patientRepository.findByPatientNumber(patientNumber);
+        if (existingPatient != null) {
+            patientRepository.delete(existingPatient);
+            return true;
+        }
+        return false;
     }
 
     private PatientResponse mapToPatientResponse(Patient patient) {
