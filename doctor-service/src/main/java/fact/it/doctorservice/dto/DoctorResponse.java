@@ -13,7 +13,6 @@ public class DoctorResponse {
     private String id;
     private String doctorNumber;
     private String email;
-    private String password;
     private String fullName;
     private String address;
     private String role;

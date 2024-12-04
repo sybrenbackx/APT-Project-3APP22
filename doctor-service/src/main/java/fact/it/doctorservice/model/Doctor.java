@@ -16,9 +16,9 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(unique = true)
     private String doctorNumber;
     private String email;
-    private String password;
     private String fullName;
     private String address;
     private String role;

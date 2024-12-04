@@ -1,13 +1,13 @@
 package fact.it.appointmentservice.controller;
 
 import fact.it.appointmentservice.dto.AppointmentResponse;
+import fact.it.appointmentservice.dto.AppointmentRequest;
 import fact.it.appointmentservice.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -17,10 +17,53 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<AppointmentResponse> getAllAppointments() {
         return appointmentService.getAllAppointments();
+    }
+    @GetMapping("/{appointmentNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Object> getAppointmentByNumber(@PathVariable String appointmentNumber) {
+        AppointmentResponse appointment = appointmentService.getAppointmentByNumber(appointmentNumber);
+        if (appointment != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(appointment);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found with number: " + appointmentNumber);
+        }
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> addAppointments(@RequestBody List<AppointmentRequest> appointmentRequests) {
+        boolean created = appointmentService.createAppointmentsFromJson(appointmentRequests);
+        if (created) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Appointments added successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("A appointment you tried to add already exists.");
+        }
+    }
+    @PutMapping("/{appointmentNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> updateAppointment(
+            @PathVariable String appointmentNumber,
+            @RequestBody AppointmentRequest appointmentRequest) {
+        boolean updated = appointmentService.updateAppointment(appointmentNumber, appointmentRequest);
+        if (updated) {
+            return ResponseEntity.status(HttpStatus.OK).body("Appointment updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found.");
+        }
+    }
+
+    @DeleteMapping("/{appointmentNumber}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<String> deleteAppointment(@PathVariable String appointmentNumber) {
+        boolean deleted = appointmentService.deleteAppointment(appointmentNumber);
+        if (deleted) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Appointment deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found.");
+        }
     }
 }
