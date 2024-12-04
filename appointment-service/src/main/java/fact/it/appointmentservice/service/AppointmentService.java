@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
-    @Value("${appointmentservice.baseurl}")
+    @Value("${patientservice.baseurl}")
     private String appointmentServiceBaseUrl;
     @Value("${doctorservice.baseurl}")
     private String doctorServiceBaseUrl;
