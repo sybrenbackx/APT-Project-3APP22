@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
-    @Value("${patientservice.baseurl}")
-    private String patientServiceBaseUrl;
+    @Value("${appointmentservice.baseurl}")
+    private String appointmentServiceBaseUrl;
     @Value("${doctorservice.baseurl}")
     private String doctorServiceBaseUrl;
 
@@ -42,21 +43,63 @@ public class AppointmentService {
             appointmentRepository.save(appointment2);
         }
     }
-    public void createAppointment(AppointmentRequest appointmentRequest){
-        Appointment appointment = Appointment.builder()
-                .appointmentNumber(appointmentRequest.getAppointmentNumber())
-                .status(appointmentRequest.getStatus())
-                .time(appointmentRequest.getTime())
-                .date(appointmentRequest.getDate())
-                .build();
-
-        appointmentRepository.save(appointment);
-    }
-
     public List<AppointmentResponse> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
 
         return appointments.stream().map(this::mapToAppointmentResponse).toList();
+    }
+
+    public AppointmentResponse getAppointmentByNumber(String appointmentNumber) {
+        try {
+            Appointment appointment = appointmentRepository.findByAppointmentNumber(appointmentNumber);
+            if (appointment == null) {
+                throw new NoSuchElementException("Appointment not found with number: " + appointmentNumber);
+            }
+            return mapToAppointmentResponse(appointment);
+        } catch (Exception e) {
+            System.err.println("Error occurred while fetching appointment: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public boolean createAppointmentsFromJson(List<AppointmentRequest> appointmentRequests) {
+        for (AppointmentRequest appointmentRequest : appointmentRequests) {
+            Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentRequest.getAppointmentNumber());
+            if (existingAppointment == null) {
+                Appointment appointment = Appointment.builder()
+                        .appointmentNumber(appointmentRequest.getAppointmentNumber())
+                        .status(appointmentRequest.getStatus())
+                        .time(appointmentRequest.getTime())
+                        .date(appointmentRequest.getDate())
+                        .build();
+                appointmentRepository.save(appointment);
+            } else {
+                System.out.println("Appointment with number " + appointmentRequest.getAppointmentNumber() + " already exists.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean updateAppointment(String appointmentNumber, AppointmentRequest appointmentRequest) {
+        Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentNumber);
+        if (existingAppointment != null) {
+            existingAppointment.setStatus(appointmentRequest.getStatus());
+            existingAppointment.setTime(appointmentRequest.getTime());
+            existingAppointment.setDate(appointmentRequest.getDate());
+            appointmentRepository.save(existingAppointment);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean deleteAppointment(String appointmentNumber) {
+        Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentNumber);
+        if (existingAppointment != null) {
+            appointmentRepository.delete(existingAppointment);
+            return true;
+        }
+        return false;
     }
 
     private AppointmentResponse mapToAppointmentResponse(Appointment appointment) {

@@ -3,7 +3,6 @@ package fact.it.patientservice.controller;
 import lombok.RequiredArgsConstructor;
 import fact.it.patientservice.dto.PatientRequest;
 import fact.it.patientservice.dto.PatientResponse;
-import fact.it.patientservice.model.Patient;
 import fact.it.patientservice.service.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ public class PatientController {
 
     private final PatientService patientService;
 
-
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<PatientResponse> getAllPatients() {
@@ -26,8 +24,13 @@ public class PatientController {
     }
     @GetMapping("/{patientNumber}")
     @ResponseStatus(HttpStatus.OK)
-    public PatientResponse getPatientByNumber(@PathVariable String patientNumber) {
-        return patientService.getPatientByNumber(patientNumber);
+    public ResponseEntity<Object> getPatientByNumber(@PathVariable String patientNumber) {
+        PatientResponse patient = patientService.getPatientByNumber(patientNumber);
+        if (patient != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(patient);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found with number: " + patientNumber);
+        }
     }
 
     @PostMapping
@@ -37,7 +40,7 @@ public class PatientController {
         if (created) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Patients added successfully.");
         } else {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Patient already exists.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("A patient you tried to add already exists.");
         }
 
 

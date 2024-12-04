@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +45,16 @@ public class PatientService {
     }
 
     public PatientResponse getPatientByNumber(String patientNumber) {
-        return mapToPatientResponse(patientRepository.findByPatientNumber(patientNumber));
+        try {
+            Patient patient = patientRepository.findByPatientNumber(patientNumber);
+            if (patient == null) {
+                throw new NoSuchElementException("Patient not found with number: " + patientNumber);
+            }
+            return mapToPatientResponse(patient);
+        } catch (Exception e) {
+            System.err.println("Error occurred while fetching patient: " + e.getMessage());
+            return null;
+        }
     }
 
     public boolean createPatientsFromJson(List<PatientRequest> patientRequests) {
