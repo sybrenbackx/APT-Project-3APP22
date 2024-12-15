@@ -57,8 +57,7 @@ public class PatientService {
         }
     }
 
-    public boolean createPatientsFromJson(List<PatientRequest> patientRequests) {
-        for (PatientRequest patientRequest : patientRequests) {
+    public boolean createPatientFromJson(PatientRequest patientRequest) {
             Patient existingPatient = patientRepository.findByPatientNumber(patientRequest.getPatientNumber());
             if (existingPatient == null) {
                 Patient patient = Patient.builder()
@@ -72,7 +71,6 @@ public class PatientService {
                 System.out.println("Patient with number " + patientRequest.getPatientNumber() + " already exists.");
                 return false;
             }
-        }
         return true;
     }
 

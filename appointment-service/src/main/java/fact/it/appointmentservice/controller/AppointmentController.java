@@ -35,8 +35,8 @@ public class AppointmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> addAppointments(@RequestBody List<AppointmentRequest> appointmentRequests) {
-        boolean created = appointmentService.createAppointmentsFromJson(appointmentRequests);
+    public ResponseEntity<String> addAppointments(@RequestBody AppointmentRequest appointmentRequest) {
+        boolean created = appointmentService.createAppointmentFromJson(appointmentRequest);
         if (created) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Appointments added successfully.");
         } else {

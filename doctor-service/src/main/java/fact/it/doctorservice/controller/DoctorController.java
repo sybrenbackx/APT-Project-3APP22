@@ -35,8 +35,8 @@ public class DoctorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> addDoctors(@RequestBody List<DoctorRequest> doctorRequests) {
-        boolean created = doctorService.createDoctorsFromJson(doctorRequests);
+    public ResponseEntity<String> addDoctors(@RequestBody DoctorRequest doctorRequest) {
+        boolean created = doctorService.createDoctorFromJson(doctorRequest);
         if (created) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Doctors added successfully.");
         } else {

@@ -62,8 +62,7 @@ public class AppointmentService {
         }
     }
 
-    public boolean createAppointmentsFromJson(List<AppointmentRequest> appointmentRequests) {
-        for (AppointmentRequest appointmentRequest : appointmentRequests) {
+    public boolean createAppointmentFromJson(AppointmentRequest appointmentRequest) {
             Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentRequest.getAppointmentNumber());
             if (existingAppointment == null) {
                 Appointment appointment = Appointment.builder()
@@ -77,7 +76,6 @@ public class AppointmentService {
                 System.out.println("Appointment with number " + appointmentRequest.getAppointmentNumber() + " already exists.");
                 return false;
             }
-        }
         return true;
     }
 
