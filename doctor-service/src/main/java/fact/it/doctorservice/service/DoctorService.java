@@ -59,8 +59,7 @@ public class DoctorService {
         }
     }
 
-    public boolean createDoctorsFromJson(List<DoctorRequest> doctorRequests) {
-        for (DoctorRequest doctorRequest : doctorRequests) {
+    public boolean createDoctorFromJson(DoctorRequest doctorRequest) {
             Doctor existingDoctor = doctorRepository.findByDoctorNumber(doctorRequest.getDoctorNumber());
             if (existingDoctor == null) {
                 Doctor doctor = Doctor.builder()
@@ -76,7 +75,6 @@ public class DoctorService {
                 System.out.println("Doctor with number " + doctorRequest.getDoctorNumber() + " already exists.");
                 return false;
             }
-        }
         return true;
     }
 
