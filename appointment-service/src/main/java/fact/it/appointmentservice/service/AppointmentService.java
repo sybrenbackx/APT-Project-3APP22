@@ -2,6 +2,7 @@ package fact.it.appointmentservice.service;
 
 import fact.it.appointmentservice.dto.AppointmentRequest;
 import fact.it.appointmentservice.dto.AppointmentResponse;
+import fact.it.appointmentservice.dto.PatientResponse;
 import fact.it.appointmentservice.model.Appointment;
 import fact.it.appointmentservice.repository.AppointmentRepository;
 import fact.it.appointmentservice.dto.DoctorResponse;
@@ -66,7 +67,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
         DoctorResponse doctorResponse = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
+                .uri("http://" + doctorServiceBaseUrl + "/api/doctors",
                         uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
                 .retrieve()
                 .bodyToMono(DoctorResponse.class)
@@ -77,6 +78,22 @@ public class AppointmentService {
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointments.stream()
                 .filter(appointment -> appointment.getDoctorNumber().equals(doctorNumber))
+                .map(this::mapToAppointmentResponse)
+                .toList();
+    }
+    public List<AppointmentResponse> getAppointmentsByPatient(String patientNumber) {
+        PatientResponse patientResponse = webClient.get()
+                .uri("http://" + doctorServiceBaseUrl + "/api/patients",
+                        uriBuilder -> uriBuilder.queryParam("patientNumber", patientNumber).build())
+                .retrieve()
+                .bodyToMono(PatientResponse.class)
+                .block();
+        if (patientResponse == null) {
+            throw new NoSuchElementException("Patient not found with number: " + patientNumber);
+        }
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return appointments.stream()
+                .filter(appointment -> appointment.getDoctorNumber().equals(patientNumber))
                 .map(this::mapToAppointmentResponse)
                 .toList();
     }
