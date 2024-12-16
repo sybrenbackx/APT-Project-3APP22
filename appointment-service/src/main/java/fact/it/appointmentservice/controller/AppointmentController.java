@@ -32,6 +32,16 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found with number: " + appointmentNumber);
         }
     }
+    @GetMapping("/{doctorNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Object> getAppointmentsByDoctor(@PathVariable String doctorNumber) {
+        List<AppointmentResponse> appointment = appointmentService.getAppointmentsByDoctor(doctorNumber);
+        if (appointment != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(appointment);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this doctor");
+        }
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
