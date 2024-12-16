@@ -4,6 +4,7 @@ import fact.it.appointmentservice.dto.AppointmentRequest;
 import fact.it.appointmentservice.dto.AppointmentResponse;
 import fact.it.appointmentservice.model.Appointment;
 import fact.it.appointmentservice.repository.AppointmentRepository;
+import fact.it.doctorservice.dto.DoctorResponse;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class AppointmentService {
     @Value("${doctorservice.baseurl}")
     private String doctorServiceBaseUrl;
 
+    private final WebClient webClient;
     private final AppointmentRepository appointmentRepository;
 
     @PostConstruct
@@ -61,6 +64,23 @@ public class AppointmentService {
             return null;
         }
     }
+    public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
+        DoctorResponse doctorResponse = webClient.get()
+                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
+                        uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
+                .retrieve()
+                .bodyToMono(DoctorResponse.class)
+                .block();
+        if (doctorResponse == null) {
+            throw new NoSuchElementException("Doctor not found with number: " + doctorNumber);
+        }
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return appointments.stream()
+                .filter(appointment -> appointment.getDoctorNumber().equals(doctorNumber))
+                .map(this::mapToAppointmentResponse)
+                .toList();
+    }
+
 
     public boolean createAppointmentFromJson(AppointmentRequest appointmentRequest) {
             Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentRequest.getAppointmentNumber());
