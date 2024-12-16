@@ -4,7 +4,7 @@ import fact.it.appointmentservice.dto.AppointmentRequest;
 import fact.it.appointmentservice.dto.AppointmentResponse;
 import fact.it.appointmentservice.model.Appointment;
 import fact.it.appointmentservice.repository.AppointmentRepository;
-import fact.it.doctorservice.dto.DoctorResponse;
+import fact.it.appointmentservice.dto.DoctorResponse;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
