@@ -5,7 +5,7 @@ on: push
 jobs:
   doctorservice:
     runs-on: ubuntu-latest
-    name: Java 17 build, test, deliver product-service container
+    name: Java 17 build, test, deliver doctor-service container
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -31,7 +31,7 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USER }}/doctor-service:latest
   patientservice:
     runs-on: ubuntu-latest
-    name: Java 17 build, test, deliver inventory-service container
+    name: Java 17 build, test, deliver patient-service container
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -57,7 +57,7 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USER }}/patient-service:latest
   appointmentservice:
     runs-on: ubuntu-latest
-    name: Java 17 build, test, deliver order-service container
+    name: Java 17 build, test, deliver appointment-service container
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
