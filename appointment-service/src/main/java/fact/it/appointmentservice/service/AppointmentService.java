@@ -36,12 +36,16 @@ public class AppointmentService {
             appointment1.setDate(LocalDate.of(2020,11,13));
             appointment1.setTime(LocalTime.of(13,30));
             appointment1.setStatus("test1");
+            appointment1.setDoctorNumber("1");
+            appointment1.setPatientNumber("1");
 
             Appointment appointment2 = new Appointment();
-            appointment1.setAppointmentNumber("1");
-            appointment1.setDate(LocalDate.of(2021,12,20));
-            appointment1.setTime(LocalTime.of(9,30));
-            appointment1.setStatus("test2");
+            appointment2.setAppointmentNumber("1");
+            appointment2.setDate(LocalDate.of(2021,12,20));
+            appointment2.setTime(LocalTime.of(9,30));
+            appointment2.setStatus("test2");
+            appointment2.setDoctorNumber("2");
+            appointment2.setPatientNumber("2");
 
             appointmentRepository.save(appointment1);
             appointmentRepository.save(appointment2);
@@ -107,6 +111,8 @@ public class AppointmentService {
                         .status(appointmentRequest.getStatus())
                         .time(appointmentRequest.getTime())
                         .date(appointmentRequest.getDate())
+                        .doctorNumber(appointmentRequest.getDoctorNumber())
+                        .patientNumber(appointmentRequest.getPatientNumber())
                         .build();
                 appointmentRepository.save(appointment);
             } else {
@@ -122,6 +128,8 @@ public class AppointmentService {
             existingAppointment.setStatus(appointmentRequest.getStatus());
             existingAppointment.setTime(appointmentRequest.getTime());
             existingAppointment.setDate(appointmentRequest.getDate());
+            existingAppointment.setDoctorNumber(appointmentRequest.getDoctorNumber());
+            existingAppointment.setPatientNumber(appointmentRequest.getPatientNumber());
             appointmentRepository.save(existingAppointment);
             return true;
         }
@@ -143,6 +151,8 @@ public class AppointmentService {
                 .status(appointment.getStatus())
                 .time(appointment.getTime())
                 .date(appointment.getDate())
+                .doctorNumber(appointment.getDoctorNumber())
+                .patientNumber(appointment.getPatientNumber())
                 .build();
     }
 }
