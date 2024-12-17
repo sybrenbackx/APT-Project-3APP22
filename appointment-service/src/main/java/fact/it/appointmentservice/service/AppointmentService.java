@@ -20,7 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class AppointmentService {
     @Value("${patientservice.baseurl}")
-    private String appointmentServiceBaseUrl;
+    private String patientServiceBaseUrl;
     @Value("${doctorservice.baseurl}")
     private String doctorServiceBaseUrl;
 
@@ -71,7 +71,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
         DoctorResponse doctorResponse = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/doctors",
+                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
                         uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
                 .retrieve()
                 .bodyToMono(DoctorResponse.class)
@@ -87,7 +87,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByPatient(String patientNumber) {
         PatientResponse patientResponse = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/patients",
+                .uri("http://" + patientServiceBaseUrl + "/api/patient",
                         uriBuilder -> uriBuilder.queryParam("patientNumber", patientNumber).build())
                 .retrieve()
                 .bodyToMono(PatientResponse.class)
@@ -97,7 +97,7 @@ public class AppointmentService {
         }
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointments.stream()
-                .filter(appointment -> appointment.getDoctorNumber().equals(patientNumber))
+                .filter(appointment -> appointment.getPatientNumber().equals(patientNumber))
                 .map(this::mapToAppointmentResponse)
                 .toList();
     }
