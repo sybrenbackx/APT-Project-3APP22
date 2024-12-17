@@ -39,6 +39,20 @@ spring:
             - Method=GET
           filters:
             - SetPath=/api/appointment/{id}
+        - id: appointment-service-by-doctor
+          uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/appointments/doctor/{id}
+            - Method=GET
+          filters:
+            - SetPath=/api/appointment/doctor/{id}
+        - id: appointment-service-by-patient
+          uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
+          predicates:
+            - Path=/appointments/patient/{id}
+            - Method=GET
+          filters:
+            - SetPath=/api/appointment/patient/{id}
         - id: appointment-service
           uri: http://${APPOINTMENT_SERVICE_BASEURL:localhost:8080}
           predicates:
