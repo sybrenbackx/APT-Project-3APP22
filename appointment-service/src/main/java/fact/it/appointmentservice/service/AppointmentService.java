@@ -71,7 +71,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
         DoctorResponse doctorResponse = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
+                .uri("http://" + doctorServiceBaseUrl + "/api/doctors",
                         uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
                 .retrieve()
                 .bodyToMono(DoctorResponse.class)
@@ -87,7 +87,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByPatient(String patientNumber) {
         PatientResponse patientResponse = webClient.get()
-                .uri("http://" + patientServiceBaseUrl + "/api/patient",
+                .uri("http://" + patientServiceBaseUrl + "/api/patients",
                         uriBuilder -> uriBuilder.queryParam("patientNumber", patientNumber).build())
                 .retrieve()
                 .bodyToMono(PatientResponse.class)
