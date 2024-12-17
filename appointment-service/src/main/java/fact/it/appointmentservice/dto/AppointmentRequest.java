@@ -21,4 +21,5 @@ public class AppointmentRequest {
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     private LocalTime time;
     private String doctorNumber;
+    private String patientNumber;
 }

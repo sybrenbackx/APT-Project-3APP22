@@ -32,7 +32,7 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Appointment not found with number: " + appointmentNumber);
         }
     }
-    @GetMapping("/{doctorNumber}")
+    @GetMapping("/doctor/{doctorNumber}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getAppointmentsByDoctor(@PathVariable String doctorNumber) {
         List<AppointmentResponse> appointment = appointmentService.getAppointmentsByDoctor(doctorNumber);
@@ -40,6 +40,16 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.OK).body(appointment);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this doctor");
+        }
+    }
+    @GetMapping("/patient/{patientNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Object> getAppointmentsByPatient(@PathVariable String patientNumber) {
+        List<AppointmentResponse> appointment = appointmentService.getAppointmentsByPatient(patientNumber);
+        if (appointment != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(appointment);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this patient");
         }
     }
 
