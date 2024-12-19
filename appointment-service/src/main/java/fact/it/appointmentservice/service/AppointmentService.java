@@ -70,14 +70,14 @@ public class AppointmentService {
         }
     }
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
-        List<DoctorResponse> doctorResponses = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/doctor/all",
+        DoctorResponse doctorResponse = webClient.get()
+                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
                         uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
                 .retrieve()
-                .bodyToFlux(DoctorResponse.class)
-                .collectList()
+                .bodyToMono(DoctorResponse.class)
                 .block();
-        if (doctorResponses == null || doctorResponses.isEmpty()) {
+        System.out.println("Response: " + doctorResponse);
+        if (doctorResponse == null) {
             throw new NoSuchElementException("Doctor not found with number: " + doctorNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
@@ -88,7 +88,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByPatient(String patientNumber) {
         List<PatientResponse> patientResponses = webClient.get()
-                .uri("http://" + patientServiceBaseUrl + "/api/patient/all",
+                .uri("http://" + patientServiceBaseUrl + "/api/patient",
                         uriBuilder -> uriBuilder.queryParam("patientNumber", patientNumber).build())
                 .retrieve()
                 .bodyToFlux(PatientResponse.class)
