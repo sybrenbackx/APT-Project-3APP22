@@ -10,10 +10,12 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -30,19 +32,19 @@ public class AppointmentService {
     @PostConstruct
     public void loadData() {
         System.out.println(appointmentRepository.count());
-        if(appointmentRepository.count() <= 0){
+        if (appointmentRepository.count() <= 0) {
             Appointment appointment1 = new Appointment();
             appointment1.setAppointmentNumber("1");
-            appointment1.setDate(LocalDate.of(2020,11,13));
-            appointment1.setTime(LocalTime.of(13,30));
+            appointment1.setDate(LocalDate.of(2020, 11, 13));
+            appointment1.setTime(LocalTime.of(13, 30));
             appointment1.setStatus("test1");
             appointment1.setDoctorNumber("1");
             appointment1.setPatientNumber("1");
 
             Appointment appointment2 = new Appointment();
             appointment2.setAppointmentNumber("1");
-            appointment2.setDate(LocalDate.of(2021,12,20));
-            appointment2.setTime(LocalTime.of(9,30));
+            appointment2.setDate(LocalDate.of(2021, 12, 20));
+            appointment2.setTime(LocalTime.of(9, 30));
             appointment2.setStatus("test2");
             appointment2.setDoctorNumber("2");
             appointment2.setPatientNumber("2");
@@ -51,6 +53,7 @@ public class AppointmentService {
             appointmentRepository.save(appointment2);
         }
     }
+
     public List<AppointmentResponse> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
 
@@ -69,15 +72,16 @@ public class AppointmentService {
             return null;
         }
     }
+
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
-        DoctorResponse doctorResponse = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
-                        uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
-                .retrieve()
-                .bodyToMono(DoctorResponse.class)
-                .block();
-        if (doctorResponse == null) {
-            throw new NoSuchElementException("Doctor not found with number: " + doctorNumber);
+        try {
+            DoctorResponse doctorResponse = webClient.get()
+                    .uri("http://" + doctorServiceBaseUrl + "/api/doctor/{id}", doctorNumber)
+                    .retrieve()
+                    .bodyToMono(DoctorResponse.class)
+                    .block();
+        } catch (Exception e) {
+            throw new NoSuchElementException("No doctor found with: " + doctorNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointments.stream()
@@ -85,15 +89,16 @@ public class AppointmentService {
                 .map(this::mapToAppointmentResponse)
                 .toList();
     }
+
     public List<AppointmentResponse> getAppointmentsByPatient(String patientNumber) {
-        PatientResponse patientResponse = webClient.get()
-                .uri("http://" + patientServiceBaseUrl + "/api/patient",
-                        uriBuilder -> uriBuilder.queryParam("patientNumber", patientNumber).build())
-                .retrieve()
-                .bodyToMono(PatientResponse.class)
-                .block();
-        if (patientResponse == null) {
-            throw new NoSuchElementException("Patient not found with number: " + patientNumber);
+        try {
+            PatientResponse patientResponse = webClient.get()
+                    .uri("http://" + patientServiceBaseUrl + "/api/patient/{id}", patientNumber)
+                    .retrieve()
+                    .bodyToMono(PatientResponse.class)
+                    .block();
+        } catch (Exception e) {
+            System.out.println("no patient with number: " + patientNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointments.stream()
@@ -103,23 +108,42 @@ public class AppointmentService {
     }
 
 
-    public boolean createAppointmentFromJson(AppointmentRequest appointmentRequest) {
-            Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentRequest.getAppointmentNumber());
-            if (existingAppointment == null) {
-                Appointment appointment = Appointment.builder()
-                        .appointmentNumber(appointmentRequest.getAppointmentNumber())
-                        .status(appointmentRequest.getStatus())
-                        .time(appointmentRequest.getTime())
-                        .date(appointmentRequest.getDate())
-                        .doctorNumber(appointmentRequest.getDoctorNumber())
-                        .patientNumber(appointmentRequest.getPatientNumber())
-                        .build();
-                appointmentRepository.save(appointment);
-            } else {
-                System.out.println("Appointment with number " + appointmentRequest.getAppointmentNumber() + " already exists.");
-                return false;
-            }
-        return true;
+    public String createAppointmentFromJson(AppointmentRequest appointmentRequest) {
+        Appointment existingAppointment = appointmentRepository.findByAppointmentNumber(appointmentRequest.getAppointmentNumber());
+
+        try {
+            DoctorResponse doctorResponse = webClient.get()
+                    .uri("http://" + doctorServiceBaseUrl + "/api/doctor/{id}", appointmentRequest.getDoctorNumber())
+                    .retrieve()
+                    .bodyToMono(DoctorResponse.class)
+                    .block();
+        } catch (Exception e) {
+            return "doctor";
+        }
+        try {
+            PatientResponse patientResponse = webClient.get()
+                    .uri("http://" + patientServiceBaseUrl + "/api/patient/{id}", appointmentRequest.getPatientNumber())
+                    .retrieve()
+                    .bodyToMono(PatientResponse.class)
+                    .block();
+        } catch (Exception e) {
+            return "patient";
+        }
+        if (existingAppointment == null) {
+            Appointment appointment = Appointment.builder()
+                    .appointmentNumber(appointmentRequest.getAppointmentNumber())
+                    .status(appointmentRequest.getStatus())
+                    .time(appointmentRequest.getTime())
+                    .date(appointmentRequest.getDate())
+                    .doctorNumber(appointmentRequest.getDoctorNumber())
+                    .patientNumber(appointmentRequest.getPatientNumber())
+                    .build();
+            appointmentRepository.save(appointment);
+        } else {
+            System.out.println("Appointment with number " + appointmentRequest.getAppointmentNumber() + " already exists.");
+            return "appointment";
+        }
+        return "created";
     }
 
     public boolean updateAppointment(String appointmentNumber, AppointmentRequest appointmentRequest) {
@@ -128,7 +152,6 @@ public class AppointmentService {
             existingAppointment.setStatus(appointmentRequest.getStatus());
             existingAppointment.setTime(appointmentRequest.getTime());
             existingAppointment.setDate(appointmentRequest.getDate());
-            existingAppointment.setDoctorNumber(appointmentRequest.getDoctorNumber());
             existingAppointment.setPatientNumber(appointmentRequest.getPatientNumber());
             appointmentRepository.save(existingAppointment);
             return true;

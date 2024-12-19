@@ -39,29 +39,34 @@ public class AppointmentController {
         if (appointment != null) {
             return ResponseEntity.status(HttpStatus.OK).body(appointment);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this doctor");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No doctor found with number: " + doctorNumber);
         }
     }
     @GetMapping("/patient/{patientNumber}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getAppointmentsByPatient(@PathVariable String patientNumber) {
         List<AppointmentResponse> appointment = appointmentService.getAppointmentsByPatient(patientNumber);
-        if (appointment != null) {
+        if (appointment != null && !appointment.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(appointment);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this patient");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No patient found with number: " + patientNumber);
         }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> addAppointments(@RequestBody AppointmentRequest appointmentRequest) {
-        boolean created = appointmentService.createAppointmentFromJson(appointmentRequest);
-        if (created) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Appointments added successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("A appointment you tried to add already exists.");
+        String created = appointmentService.createAppointmentFromJson(appointmentRequest);
+        if (created.equals("appointment")){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The appointment with number " + appointmentRequest.getAppointmentNumber() + " you tried to add already exists.");
         }
+        if (created.equals("doctor")){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No doctor with number: " + appointmentRequest.getDoctorNumber());
+        }
+        if (created.equals("patient")){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No patient with number: " + appointmentRequest.getPatientNumber());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Appointments added successfully.");
     }
     @PutMapping("/{appointmentNumber}")
     @ResponseStatus(HttpStatus.OK)
