@@ -77,7 +77,7 @@ public class AppointmentService {
                 .bodyToFlux(DoctorResponse.class)
                 .collectList()
                 .block();
-        if (doctorResponses == null) {
+        if (doctorResponses == null || doctorResponses.isEmpty()) {
             throw new NoSuchElementException("Doctor not found with number: " + doctorNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
@@ -94,7 +94,7 @@ public class AppointmentService {
                 .bodyToFlux(PatientResponse.class)
                 .collectList()
                 .block();
-        if (patientResponses == null) {
+        if (patientResponses == null || patientResponses.isEmpty()) {
             throw new NoSuchElementException("Patient not found with number: " + patientNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
