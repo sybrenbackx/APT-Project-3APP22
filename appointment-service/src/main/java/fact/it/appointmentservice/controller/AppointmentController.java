@@ -56,12 +56,17 @@ public class AppointmentController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> addAppointments(@RequestBody AppointmentRequest appointmentRequest) {
-        boolean created = appointmentService.createAppointmentFromJson(appointmentRequest);
-        if (created) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Appointments added successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("A appointment you tried to add already exists.");
+        String created = appointmentService.createAppointmentFromJson(appointmentRequest);
+        if (created.equals("appointment")){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The appointment with number " + appointmentRequest.getAppointmentNumber() + " you tried to add already exists.");
         }
+        if (created.equals("doctor")){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No doctor with number: " + appointmentRequest.getDoctorNumber());
+        }
+        if (created.equals("patient")){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No patient with number: " + appointmentRequest.getPatientNumber());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Appointments added successfully.");
     }
     @PutMapping("/{appointmentNumber}")
     @ResponseStatus(HttpStatus.OK)
