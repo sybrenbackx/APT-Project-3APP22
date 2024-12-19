@@ -152,7 +152,6 @@ public class AppointmentService {
             existingAppointment.setStatus(appointmentRequest.getStatus());
             existingAppointment.setTime(appointmentRequest.getTime());
             existingAppointment.setDate(appointmentRequest.getDate());
-            existingAppointment.setDoctorNumber(appointmentRequest.getDoctorNumber());
             existingAppointment.setPatientNumber(appointmentRequest.getPatientNumber());
             appointmentRepository.save(existingAppointment);
             return true;
