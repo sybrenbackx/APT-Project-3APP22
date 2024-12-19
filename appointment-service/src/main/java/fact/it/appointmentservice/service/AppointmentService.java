@@ -71,8 +71,7 @@ public class AppointmentService {
     }
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
         DoctorResponse doctorResponse = webClient.get()
-                .uri("http://" + doctorServiceBaseUrl + "/api/doctor",
-                        uriBuilder -> uriBuilder.queryParam("doctorNumber", doctorNumber).build())
+                .uri("http://" + doctorServiceBaseUrl + "/api/doctor/{id}", doctorNumber)
                 .retrieve()
                 .bodyToMono(DoctorResponse.class)
                 .block();
