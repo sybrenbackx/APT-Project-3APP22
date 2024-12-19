@@ -82,6 +82,18 @@ services:
       APPOINTMENT_SERVICE_BASEURL: appointment-service:8080
       DOCTOR_SERVICE_BASEURL: doctor-service:8081
       PATIENT_SERVICE_BASEURL: patient-service:8082
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: always
+    links:
+      - appointment-service
+      - doctor-service
+      - patient-service
 
 volumes:
   mongodb_appointment_data:
