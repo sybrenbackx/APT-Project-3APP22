@@ -70,14 +70,13 @@ public class AppointmentService {
         }
     }
     public List<AppointmentResponse> getAppointmentsByDoctor(String doctorNumber) {
-        DoctorResponse doctorResponse = webClient.get()
+        try{DoctorResponse doctorResponse = webClient.get()
                 .uri("http://" + doctorServiceBaseUrl + "/api/doctor/{id}", doctorNumber)
                 .retrieve()
                 .bodyToMono(DoctorResponse.class)
-                .block();
-        System.out.println("Response: " + doctorResponse);
-        if (doctorResponse == null) {
-            throw new NoSuchElementException("Doctor not found with number: " + doctorNumber);
+                .block();}
+        catch (Exception e) {
+            throw new NoSuchElementException("No doctor found with: " + doctorNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointments.stream()
@@ -86,15 +85,13 @@ public class AppointmentService {
                 .toList();
     }
     public List<AppointmentResponse> getAppointmentsByPatient(String patientNumber) {
-        List<PatientResponse> patientResponses = webClient.get()
-                .uri("http://" + patientServiceBaseUrl + "/api/patient",
-                        uriBuilder -> uriBuilder.queryParam("patientNumber", patientNumber).build())
+        try{PatientResponse patientResponse = webClient.get()
+                .uri("http://" + patientServiceBaseUrl + "/api/patient/{id}", patientNumber)
                 .retrieve()
-                .bodyToFlux(PatientResponse.class)
-                .collectList()
-                .block();
-        if (patientResponses == null || patientResponses.isEmpty()) {
-            throw new NoSuchElementException("Patient not found with number: " + patientNumber);
+                .bodyToMono(PatientResponse.class)
+                .block();}
+        catch (Exception e) {
+            System.out.println("no patient with number: " + patientNumber);
         }
         List<Appointment> appointments = appointmentRepository.findAll();
         return appointments.stream()

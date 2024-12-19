@@ -39,17 +39,17 @@ public class AppointmentController {
         if (appointment != null) {
             return ResponseEntity.status(HttpStatus.OK).body(appointment);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this doctor");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No doctor found with number: " + doctorNumber);
         }
     }
     @GetMapping("/patient/{patientNumber}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getAppointmentsByPatient(@PathVariable String patientNumber) {
         List<AppointmentResponse> appointment = appointmentService.getAppointmentsByPatient(patientNumber);
-        if (appointment != null) {
+        if (appointment != null && !appointment.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(appointment);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No appointments found for this patient");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No patient found with number: " + patientNumber);
         }
     }
 
