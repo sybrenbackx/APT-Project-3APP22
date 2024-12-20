@@ -8,8 +8,9 @@ A system for scheduling doctor appointments, managing patient and doctor records
 - Api-Gateway  
 - Google Cloud Platform Oauth2  
 - Prometheus  
-- MySql-Appointment  
-- MySql-Doctor  
+- Mongo-Appointment  
+- MySql-Doctor
+- MySql-Patient  
 ## Deployment Schema
 ![Screenshot 2024-12-20 172423](https://github.com/user-attachments/assets/d7b39cce-c259-4cfe-88e2-2f5f5f418dd9)
 # Postman
@@ -51,4 +52,10 @@ PUT /patients (AUTH) - Update a patient
 ![image](https://github.com/user-attachments/assets/21d03b3d-3fa5-4b4b-a90c-cb50f10401f9)  
 DELETE /patients (AUTH) - Delete a patient  
 ![image](https://github.com/user-attachments/assets/18fb565f-4414-4aed-bd10-b270900828a6)  
+
+### Prometheus
+![Screenshot 2024-12-19 191619](https://github.com/user-attachments/assets/de72f5c0-b1ab-4d94-a749-0993efe0cae8)  
+![Screenshot 2024-12-19 191643](https://github.com/user-attachments/assets/507222ee-1b1e-4356-8472-0640d6429552)  
+![Screenshot 2024-12-19 191945](https://github.com/user-attachments/assets/a4e51ec2-00c1-4f0c-b7e4-4879a2361305)  
+![Screenshot 2024-12-19 192250](https://github.com/user-attachments/assets/138b8060-a097-4c19-82c2-a7e9ad1940f4)  
 
