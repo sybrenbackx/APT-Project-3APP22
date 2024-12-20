@@ -54,8 +54,12 @@ DELETE /patients (AUTH) - Delete a patient
 ![image](https://github.com/user-attachments/assets/18fb565f-4414-4aed-bd10-b270900828a6)  
 
 ### Prometheus
+Cpu usage  
 ![Screenshot 2024-12-19 191619](https://github.com/user-attachments/assets/de72f5c0-b1ab-4d94-a749-0993efe0cae8)  
+Number of requests of an endpoint  
 ![Screenshot 2024-12-19 191643](https://github.com/user-attachments/assets/507222ee-1b1e-4356-8472-0640d6429552)  
+Connected targets  
 ![Screenshot 2024-12-19 191945](https://github.com/user-attachments/assets/a4e51ec2-00c1-4f0c-b7e4-4879a2361305)  
+Request speed  
 ![Screenshot 2024-12-19 192250](https://github.com/user-attachments/assets/138b8060-a097-4c19-82c2-a7e9ad1940f4)  
 
