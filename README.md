@@ -12,7 +12,7 @@ A system for scheduling doctor appointments, managing patient and doctor records
 - MySql-Doctor
 - MySql-Patient  
 ## Deployment Schema
-![Screenshot 2024-12-20 172423](https://github.com/user-attachments/assets/d7b39cce-c259-4cfe-88e2-2f5f5f418dd9)
+![image](https://github.com/user-attachments/assets/d02af998-fa65-4032-ac63-b6822b87818b)
 # Postman
 ## Appointments:
 GET /appointments -> Get all appointments  
